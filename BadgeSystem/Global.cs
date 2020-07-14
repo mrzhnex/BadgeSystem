@@ -43,7 +43,7 @@ namespace BadgeSystem
 
         public static string GetDataFolder()
         {
-            return Path.Combine("/etc/PluginData");
+            return Path.Combine("/etc/scpsl/Plugin");
         }
 
         public static string color = "army_green";
