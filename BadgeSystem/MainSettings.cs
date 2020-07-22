@@ -7,8 +7,8 @@ namespace BadgeSystem
 {
     public class MainSettings : Plugin
     {
-        public override string getName => "BadgeSystem";
-        private SetEvents SetEvents;
+        public override string getName => nameof(BadgeSystem);
+        public SetEvents SetEvents { get; set; }
 
         public override void OnEnable()
         {

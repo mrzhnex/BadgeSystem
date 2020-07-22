@@ -4,25 +4,21 @@ using System.Linq;
 
 namespace BadgeSystem
 {
-    class Global
+    public static class Global
     {
-        //main
         public static bool Active = true;
 
-        //static value
         public static System.Random rand = new System.Random();
         public static readonly int idRangeOne = 9500;
         public static readonly int idRangeTwo = 9700;
         public static readonly string voidSymbol = " ";
 
-        //fixed static data
         public static List<string> randomName = new List<string>();
         public static List<string> fixedIdAndName = new List<string>();
         public static readonly string fileNameFixed = "FixedNames.txt";
         public static readonly string fileNameRandom = "RandomNames.txt";
         public static readonly string fileNameColor = "ActionColor.txt";
 
-        //temp data in game
         public static List<string> surnameInGame = new List<string>();
 
         public static string SetSurName()
