@@ -1,33 +1,18 @@
-﻿using EXILED;
+﻿using Exiled.API.Features;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace BadgeSystem
 {
-    public class MainSettings : Plugin
+    public class MainSettings : Plugin<Config>
     {
-        public override string getName => nameof(BadgeSystem);
+        public override string Name => nameof(BadgeSystem);
         public SetEvents SetEvents { get; set; }
 
-        public override void OnEnable()
+        public override void OnEnabled()
         {
             SetEvents = new SetEvents();
-            try
-            {
-                Global.fixedIdAndName = File.ReadAllLines(Path.Combine(Global.GetDataFolder(), Global.fileNameFixed), Encoding.UTF8).ToList();
-                Global.randomName = File.ReadAllLines(Path.Combine(Global.GetDataFolder(), Global.fileNameRandom), Encoding.UTF8).ToList();
-                Global.Active = true;
-                Events.PlayerJoinEvent += SetEvents.OnPlayerJoin;
-                Events.RoundEndEvent += SetEvents.OnRoundEnd;
-                Events.RemoteAdminCommandEvent += SetEvents.OnRemoteAdminCommand;
-                Log.Info(getName + " on");
-            }
-            catch (System.Exception)
-            {
-                Global.Active = false;
-                Log.Info(getName + " error loading names. Plugin was disabled");
-            }
             try
             {
                 Global.color = File.ReadAllText(Path.Combine(Global.GetDataFolder(), Global.fileNameColor), Encoding.UTF8);
@@ -38,17 +23,27 @@ namespace BadgeSystem
                 Global.color = "army_green";
                 Log.Info("Failed download custom action color. Set default action color: " + Global.color);
             }
+            try
+            {
+                Global.fixedIdAndName = File.ReadAllLines(Path.Combine(Global.GetDataFolder(), Global.fileNameFixed), Encoding.UTF8).ToList();
+                Global.randomName = File.ReadAllLines(Path.Combine(Global.GetDataFolder(), Global.fileNameRandom), Encoding.UTF8).ToList();
+                Exiled.Events.Handlers.Player.Joined += SetEvents.OnJoined;
+                Exiled.Events.Handlers.Server.WaitingForPlayers += SetEvents.OnWaitingForPlayers;
+                Exiled.Events.Handlers.Server.SendingRemoteAdminCommand += SetEvents.OnSendingRemoteAdminCommand;
+                Log.Info(Name + " on");
+            }
+            catch (System.Exception)
+            {
+                Log.Info("Error loading names. Plugin was disabled");
+            }
         }
 
-        public override void OnDisable()
+        public override void OnDisabled()
         {
-            Events.PlayerJoinEvent -= SetEvents.OnPlayerJoin;
-            Events.RoundEndEvent -= SetEvents.OnRoundEnd;
-            Events.RemoteAdminCommandEvent -= SetEvents.OnRemoteAdminCommand;
-            Global.Active = false;
-            Log.Info(getName + " off");
+            Exiled.Events.Handlers.Player.Joined -= SetEvents.OnJoined;
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= SetEvents.OnWaitingForPlayers;
+            Exiled.Events.Handlers.Server.SendingRemoteAdminCommand -= SetEvents.OnSendingRemoteAdminCommand;
+            Log.Info(Name + " off");
         }
-
-        public override void OnReload() { }
     }
 }

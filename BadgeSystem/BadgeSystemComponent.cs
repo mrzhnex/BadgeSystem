@@ -1,4 +1,4 @@
-﻿using EXILED.Extensions;
+﻿using Exiled.API.Features;
 using UnityEngine;
 
 namespace BadgeSystem
@@ -25,7 +25,7 @@ namespace BadgeSystem
                     Badge = gameObject.GetComponent<ServerRoles>().NetworkMyText;
                     Color = gameObject.GetComponent<ServerRoles>().NetworkMyColor;
                 }
-                if (Player.GetPlayer(gameObject) != null && Player.GetPlayer(gameObject).GetRole() == RoleType.Spectator)
+                if (Player.Get(gameObject) != null && Player.Get(gameObject).Role == RoleType.Spectator)
                 {
                     if (IsBadgeCover)
                     {
@@ -42,52 +42,6 @@ namespace BadgeSystem
                             SetRank(Color, Badge);
                             Stage = 3;
                         }
-                    }
-                }
-                else if (gameObject.GetComponent<BleedOutPlugin.BleedOutComponent>() != null)
-                {
-                    switch (gameObject.GetComponent<BleedOutPlugin.BleedOutComponent>().BleedOutType)
-                    {
-                        case BleedOutPlugin.BleedOutType.Arterial:
-                            if (Stage != 4 || IsRefreshBadgeCover)
-                            {
-                                if (IsBadgeCover)
-                                    SetRank(Global.color, Global.bleedout4);
-                                else
-                                    SetRank(Global.color, Badge + Global.voidSymbol + Global.bleedout4);
-                                Stage = 4;
-                            }
-                            break;
-                        case BleedOutPlugin.BleedOutType.Major:
-                            if (Stage != 5 || IsRefreshBadgeCover)
-                            {
-                                if (IsBadgeCover)
-                                    SetRank(Global.color, Global.bleedout3);
-                                else
-                                    SetRank(Global.color, Badge + Global.voidSymbol + Global.bleedout3);
-                                Stage = 5;
-                            }
-                            break;
-                        case BleedOutPlugin.BleedOutType.Normal:
-                            if (Stage != 6 || IsRefreshBadgeCover)
-                            {
-                                if (IsBadgeCover)
-                                    SetRank(Global.color, Global.bleedout2);
-                                else
-                                    SetRank(Global.color, Badge + Global.voidSymbol + Global.bleedout2);
-                                Stage = 6;
-                            }
-                            break;
-                        case BleedOutPlugin.BleedOutType.Miner:
-                            if (Stage != 7 || IsRefreshBadgeCover)
-                            {
-                                if (IsBadgeCover)
-                                    SetRank(Global.color, Global.bleedout1);
-                                else
-                                    SetRank(Global.color, Badge + Global.voidSymbol + Global.bleedout1);
-                                Stage = 7;
-                            }
-                            break;
                     }
                 }
                 else if (gameObject.GetComponent<PocketKillsPlugin.PocketKillsComponent>() != null)

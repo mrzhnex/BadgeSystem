@@ -1,5 +1,5 @@
-﻿using EXILED;
-using EXILED.Extensions;
+﻿using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,47 +8,7 @@ namespace BadgeSystem
 {
     public class SetEvents
     {
-        public void OnPlayerJoin(PlayerJoinEvent ev)
-        {
-            if (Global.Active)
-            {
-                foreach (string idAndName in Global.fixedIdAndName)
-                {
-                    if (idAndName.Contains(ev.Player.GetUserId().Replace("@steam", string.Empty)))
-                    {
-                        if (idAndName.Split(' ').Length != 2)
-                            break;
-                        ev.Player.nicknameSync.MyNick = ev.Player.nicknameSync.MyNick + idAndName.Split(' ')[1];
-                        ev.Player.gameObject.AddComponent<BadgeSystemComponent>();
-                        return;
-                    }
-                }
-                ev.Player.nicknameSync.MyNick = ev.Player.nicknameSync.MyNick + Global.SetSurName();
-                ev.Player.gameObject.AddComponent<BadgeSystemComponent>();
-            }
-            else
-            {
-                ev.Player.gameObject.AddComponent<BadgeSystemComponent>();
-            }
-        }
-
-        internal void OnRemoteAdminCommand(ref RACommandEvent ev)
-        {
-            if (Player.GetPlayer(ev.Sender.Nickname) == null || Player.GetPlayer(ev.Sender.Nickname).gameObject == null || Player.GetPlayer(ev.Sender.Nickname).gameObject.GetComponent<BadgeSystemComponent>() == null)
-                return;
-            if (ev.Command == "hidetag")
-            {
-                Player.GetPlayer(ev.Sender.Nickname).gameObject.GetComponent<BadgeSystemComponent>().IsBadgeCover = true;
-                Player.GetPlayer(ev.Sender.Nickname).gameObject.GetComponent<BadgeSystemComponent>().IsRefreshBadgeCover = true;
-            }
-            else if (ev.Command == "showtag")
-            {
-                Player.GetPlayer(ev.Sender.Nickname).gameObject.GetComponent<BadgeSystemComponent>().IsBadgeCover = false;
-                Player.GetPlayer(ev.Sender.Nickname).gameObject.GetComponent<BadgeSystemComponent>().IsRefreshBadgeCover = true;
-            }
-        }
-
-        public void OnRoundEnd()
+        internal void OnWaitingForPlayers()
         {
             Global.surnameInGame = new System.Collections.Generic.List<string>();
             try
@@ -72,6 +32,42 @@ namespace BadgeSystem
             {
                 Global.color = "army_green";
                 Log.Info("Failed download custom action color. Set default action color: " + Global.color);
+            }
+        }
+
+        internal void OnJoined(JoinedEventArgs ev)
+        {
+            if (Global.Active)
+            {
+                foreach (string idAndName in Global.fixedIdAndName)
+                {
+                    if (idAndName.Contains(ev.Player.UserId.Replace("@steam", string.Empty)))
+                    {
+                        if (idAndName.Split(' ').Length != 2)
+                            break;
+                        ev.Player.ReferenceHub.nicknameSync.MyNick = ev.Player.ReferenceHub.nicknameSync.MyNick + idAndName.Split(' ')[1];
+                        ev.Player.GameObject.AddComponent<BadgeSystemComponent>();
+                        return;
+                    }
+                }
+                ev.Player.ReferenceHub.nicknameSync.MyNick = ev.Player.ReferenceHub.nicknameSync.MyNick + Global.SetSurName();
+            }
+            ev.Player.GameObject.AddComponent<BadgeSystemComponent>();
+        }
+
+        internal void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
+        {
+            if (ev.Sender.GameObject.GetComponent<BadgeSystemComponent>() == null)
+                return;
+            if (ev.Name == "hidetag")
+            {
+                ev.Sender.GameObject.GetComponent<BadgeSystemComponent>().IsBadgeCover = true;
+                ev.Sender.GameObject.GetComponent<BadgeSystemComponent>().IsRefreshBadgeCover = true;
+            }
+            else if (ev.Name == "showtag")
+            {
+                ev.Sender.GameObject.GetComponent<BadgeSystemComponent>().IsBadgeCover = false;
+                ev.Sender.GameObject.GetComponent<BadgeSystemComponent>().IsRefreshBadgeCover = true;
             }
         }
     }

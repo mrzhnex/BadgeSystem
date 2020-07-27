@@ -7,7 +7,6 @@ namespace BadgeSystem
     public static class Global
     {
         public static bool Active = true;
-
         public static System.Random rand = new System.Random();
         public static readonly int idRangeOne = 9500;
         public static readonly int idRangeTwo = 9700;
@@ -43,12 +42,6 @@ namespace BadgeSystem
         }
 
         public static string color = "army_green";
-
-        public static string bleedout1 = "*Слегка истекает кровью*";
-        public static string bleedout2 = "*Истекает кровью*";
-        public static string bleedout3 = "*Хлещет кровью*";
-        public static string bleedout4 = "*Умирает от кровотечения*";
-
 
         public static string pocketkills = "*Гниет*";
 
